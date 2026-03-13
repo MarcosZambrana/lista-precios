@@ -68,12 +68,9 @@ var searchTerm = "";
 function loadProducts() {
   document.getElementById("productsContainer").innerHTML = "<div class='loading'>Cargando...</div>";
   var ts = new Date().getTime();
-  var csvURL = CONFIG.googleSheetURL + "&t=" + ts;
-  // Usamos el proxy con header CORS correcto
-  var proxyURL = "https://api.allorigins.win/get?url=" + encodeURIComponent(csvURL);
-  fetch(proxyURL)
-    .then(function(r) { return r.json(); })
-    .then(function(data) { procesarCSV(data.contents); })
+  fetch(CONFIG.googleSheetURL + "&t=" + ts)
+    .then(function(r) { return r.text(); })
+    .then(function(csv) { procesarCSV(csv); })
     .catch(function(e) { showError("Error al cargar. Intente de nuevo."); });
 }
 
@@ -90,11 +87,13 @@ function procesarCSV(csv) {
 
 function limpiar(val) {
   if (!val) return "";
-  // Eliminar \r \n y espacios extra
   var v = "";
   for (var i = 0; i < val.length; i++) {
     var c = val.charCodeAt(i);
-    if (c !== 13 && c !== 10 && c !== 32) v += val[i];
+    // Ignorar: \r (13), \n (10), espacio (32), comilla doble (34)
+    if (c !== 13 && c !== 10 && c !== 32 && c !== 34) {
+      v += val[i];
+    }
   }
   return v.toUpperCase();
 }
@@ -105,24 +104,34 @@ function tieneStock(val) {
 }
 
 function parseCSV(csv) {
+  // Normalizar saltos de linea
+  csv = csv.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
   var lines = csv.trim().split("\n");
   var products = [];
   for (var i = 1; i < lines.length; i++) {
-    var values = lines[i].split(",");
+    var line = lines[i];
+    if (!line.trim()) continue;
+    var values = line.split(",");
     if (values.length < 5 || !values[1] || !values[4]) continue;
     if (!tieneStock(values[7])) continue;
     var product = {
-      brand:    values[0] ? values[0].trim() : "Sin categoria",
-      name:     values[1] ? values[1].trim() : "Sin nombre",
-      specs:    values[2] ? values[2].trim() : "",
-      currency: values[3] ? values[3].trim() : "$",
-      price:    parseFloat(values[4].replace(/[^0-9]/g, "")) || 0,
-      color:    values[5] ? values[5].trim() : "",
-      emoji:    values[6] ? values[6].trim() : ""
+      brand:    limpiarTexto(values[0]) || "Sin categoria",
+      name:     limpiarTexto(values[1]) || "Sin nombre",
+      specs:    limpiarTexto(values[2]) || "",
+      currency: limpiarTexto(values[3]) || "$",
+      price:    parseFloat((values[4] || "").replace(/[^0-9]/g, "")) || 0,
+      color:    limpiarTexto(values[5]) || "",
+      emoji:    limpiarTexto(values[6]) || ""
     };
     products.push(product);
   }
   return products;
+}
+
+function limpiarTexto(val) {
+  if (!val) return "";
+  // Solo eliminar \r \n y comillas dobles, conservar espacios
+  return val.replace(/[\r\n"]/g, "").trim();
 }
 
 function formatPrice(price, currency) {
