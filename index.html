@@ -30,16 +30,16 @@
         .product-specs { color: #718096; font-size: 0.82em; line-height: 1.5; margin-bottom: 8px; }
         .product-footer { display: flex; flex-direction: column; gap: 10px; padding: 0 15px 15px; }
         .price { font-size: 1.3em; font-weight: bold; color: #2d3748; }
-        .whatsapp-btn { background: #25d366; color: white; padding: 10px; border-radius: 25px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: 0.9em; transition: all 0.2s; }
+        .whatsapp-btn { background: #25d366; color: white; padding: 10px; border-radius: 25px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: 0.9em; }
         .whatsapp-btn:hover { background: #1da851; }
         .stock-badge { position: absolute; top: 10px; right: 10px; background: #48bb78; color: white; padding: 4px 10px; border-radius: 10px; font-size: 0.75em; font-weight: bold; }
         .color-badge { display: inline-block; padding: 2px 8px; border-radius: 8px; font-size: 0.78em; background: #e9ecef; color: #4a5568; margin-left: 5px; }
         .stats { text-align: center; color: #718096; font-size: 0.9em; margin-top: 20px; padding: 15px; background: white; border-radius: 10px; }
         .loading { text-align: center; padding: 60px; color: #667eea; font-size: 1.2em; grid-column: 1/-1; }
         .error-message { background: #fed7d7; color: #c53030; padding: 20px; border-radius: 10px; text-align: center; grid-column: 1/-1; }
-        .no-results { text-align: center; padding: 40px; color: #718096; grid-column: 1/-1; font-size: 1.1em; }
+        .no-results { text-align: center; padding: 40px; color: #718096; grid-column: 1/-1; }
         .floating-whatsapp { position: fixed; bottom: 20px; right: 20px; background: #25d366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 30px; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .refresh-btn { position: fixed; bottom: 90px; right: 20px; background: #667eea; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: none; font-size: 22px; cursor: pointer; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .refresh-btn { position: fixed; bottom: 90px; right: 20px; background: #667eea; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: none; font-size: 22px; cursor: pointer; z-index: 1000; }
         .hidden { display: none !important; }
         @media (max-width:600px) {
             .products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
@@ -79,8 +79,7 @@ var currentFilter = "all";
 
 function limpiarTexto(val) {
   if (!val) return "";
-  return val.replace(/[
-"]/g, "").trim();
+  return val.replace(/[\r\n"]/g, "").trim();
 }
 
 function limpiar(val) {
@@ -99,15 +98,22 @@ function tieneStock(val) {
 }
 
 function parsearLineas(csv) {
-  csv = csv.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
-  return csv.trim().split("\n");
+  return csv.replace(/\r\n/g, "\n").replace(/\r/g, "\n").trim().split("\n");
+}
+
+function fetchConTimeout(url, ms) {
+  var timeout = new Promise(function(_, reject) {
+    setTimeout(function() { reject(new Error("timeout")); }, ms);
+  });
+  return Promise.race([fetch(url), timeout]);
 }
 
 function loadProducts() {
   document.getElementById("productsContainer").innerHTML = "<div class='loading'>Cargando productos...</div>";
   var ts = new Date().getTime();
 
-  fetch(CONFIG.imagesURL + "&t=" + ts)
+  // Intentar cargar imagenes con timeout de 4 segundos
+  fetchConTimeout(CONFIG.imagesURL + "&t=" + ts, 4000)
     .then(function(r) { return r.text(); })
     .then(function(csv) {
       var lines = parsearLineas(csv);
@@ -119,13 +125,16 @@ function loadProducts() {
         }
       }
     })
-    .catch(function() { imageMap = {}; })
-    .finally(function() {
-      fetch(CONFIG.csvURL + "&t=" + ts)
-        .then(function(r) { return r.text(); })
-        .then(function(csv) { procesarProductos(csv); })
-        .catch(function() { showError("Error al cargar productos."); });
-    });
+    .catch(function() {
+      imageMap = {}; // Si falla, seguir sin imagenes
+    })
+    .then(function() {
+      // Siempre carga los productos, con o sin imagenes
+      return fetchConTimeout(CONFIG.csvURL + "&t=" + ts, 8000);
+    })
+    .then(function(r) { return r.text(); })
+    .then(function(csv) { procesarProductos(csv); })
+    .catch(function() { showError("Error al cargar productos. Intente de nuevo."); });
 }
 
 function procesarProductos(csv) {
@@ -168,7 +177,7 @@ function getUniqueBrands() {
 
 function renderFilters() {
   var c = document.getElementById("brandFilters");
-  c.innerHTML = "<button class='filter-btn active' data-brand='all' onclick='setFilter(\"all\")'>Todos</button>";
+  c.innerHTML = "<button class='filter-btn active' data-brand='all' onclick=\"setFilter('all')\">Todos</button>";
   getUniqueBrands().forEach(function(b) {
     var btn = document.createElement("button");
     btn.className = "filter-btn";
@@ -211,9 +220,11 @@ function renderProducts() {
     card.setAttribute("data-name", p.name.toLowerCase());
     card.setAttribute("data-specs", p.specs.toLowerCase());
 
+    var fallback = p.emoji ? p.emoji : "&#128241;";
     var imgHtml = p.image
-      ? "<img src='" + p.image + "' alt='" + p.name + "' onerror=\"this.parentNode.innerHTML='<div class=no-image>' + (p.emoji||'&#128241;') + '</div>'\">"
-      : "<div class='no-image'>" + (p.emoji || "&#128241;") + "</div>";
+      ? "<img src='" + p.image + "' alt='" + p.name + "' onerror=\"this.style.display='none';this.parentNode.querySelector('.no-image').style.display='flex'\">" +
+        "<div class='no-image' style='display:none'>" + fallback + "</div>"
+      : "<div class='no-image'>" + fallback + "</div>";
 
     var colorHtml = p.color ? "<span class='color-badge'>" + p.color + "</span>" : "";
     var w = "https://wa.me/" + CONFIG.whatsappNumber + "?text=Hola!%20Me%20interesa%20" + encodeURIComponent(p.name) + "%20" + encodeURIComponent(p.specs);
