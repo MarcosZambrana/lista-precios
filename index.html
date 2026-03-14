@@ -3,23 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Precios - Celulares</title>
+    <title>Emprendiendo Tecnología</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #f5f5f7; min-height: 100vh; }
 
         /* HEADER */
-        .header { background: white; padding: 40px 20px 30px; text-align: center; border-bottom: 1px solid #e8e8ed; }
-        .header-logo { font-size: 2em; margin-bottom: 4px; }
-        .header h1 { font-size: 1.8em; font-weight: 700; color: #1d1d1f; letter-spacing: -0.5px; }
-        .header p { color: #6e6e73; font-size: 0.95em; margin-top: 4px; }
+        .header { background: white; padding: 30px 20px 24px; text-align: center; border-bottom: 1px solid #e8e8ed; }
+        .header-logo-wrap { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 6px; }
+        .header-logo-img { width: 64px; height: 64px; object-fit: contain; }
+        .header-brand { text-align: left; }
+        .header-brand h1 { font-size: 1.5em; font-weight: 700; color: #1d1d1f; letter-spacing: -0.5px; line-height: 1.2; }
+        .header-brand span { font-size: 0.85em; color: #6e6e73; font-weight: 400; }
         .update-info { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; background: #f5f5f7; padding: 6px 14px; border-radius: 20px; font-size: 0.8em; color: #6e6e73; }
 
         /* CONTROLS */
         .controls { max-width: 1200px; margin: 0 auto; padding: 24px 20px 0; }
         .search-wrap { position: relative; margin-bottom: 16px; }
-        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #6e6e73; font-size: 1em; pointer-events: none; }
+        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #6e6e73; pointer-events: none; }
         .search-box { width: 100%; padding: 13px 20px 13px 44px; border: 1.5px solid #e8e8ed; border-radius: 12px; font-size: 15px; font-family: 'Inter', sans-serif; background: white; color: #1d1d1f; transition: border-color 0.2s; }
         .search-box:focus { outline: none; border-color: #0071e3; box-shadow: 0 0 0 3px rgba(0,113,227,0.1); }
         .filters { display: flex; gap: 8px; flex-wrap: wrap; padding-bottom: 20px; }
@@ -40,12 +42,11 @@
         .product-card:hover .product-image-wrap img { transform: scale(1.06); }
         .no-image { font-size: 64px; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; background: #f5f5f7; }
 
-        /* STOCK BADGE */
-        .stock-badge { position: absolute; top: 12px; left: 12px; background: rgba(52,199,89,0.15); color: #1a7f37; padding: 4px 10px; border-radius: 20px; font-size: 0.72em; font-weight: 600; letter-spacing: 0.2px; }
+        .stock-badge { position: absolute; top: 12px; left: 12px; background: rgba(52,199,89,0.15); color: #1a7f37; padding: 4px 10px; border-radius: 20px; font-size: 0.72em; font-weight: 600; }
 
         /* BODY */
         .product-body { padding: 16px 16px 8px; flex: 1; }
-        .product-brand { display: inline-block; font-size: 0.72em; font-weight: 600; color: #0071e3; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px; }
+        .product-brand { font-size: 0.72em; font-weight: 600; color: #0071e3; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px; }
         .product-name { font-size: 1em; font-weight: 600; color: #1d1d1f; line-height: 1.4; margin-bottom: 5px; }
         .product-specs { color: #6e6e73; font-size: 0.82em; line-height: 1.5; }
         .color-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 0.75em; background: #f5f5f7; color: #6e6e73; margin-top: 6px; }
@@ -67,7 +68,7 @@
         @keyframes bounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-10px)} }
         .retrying { text-align: center; padding: 40px; color: #ff9f0a; font-size: 0.95em; grid-column: 1/-1; }
         .error-message { background: #fff2f2; color: #c53030; padding: 24px; border-radius: 14px; text-align: center; grid-column: 1/-1; font-size: 0.9em; }
-        .no-results { text-align: center; padding: 60px; color: #6e6e73; grid-column: 1/-1; font-size: 1em; }
+        .no-results { text-align: center; padding: 60px; color: #6e6e73; grid-column: 1/-1; }
         .hidden { display: none !important; }
 
         /* FLOATING */
@@ -77,7 +78,8 @@
         .refresh-btn:hover { border-color: #0071e3; color: #0071e3; }
 
         @media (max-width:600px) {
-            .header h1 { font-size: 1.4em; }
+            .header-logo-img { width: 50px; height: 50px; }
+            .header-brand h1 { font-size: 1.2em; }
             .products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; padding: 0 12px 30px; }
             .product-image-wrap { height: 155px; }
             .product-footer { flex-direction: column; align-items: stretch; }
@@ -88,9 +90,13 @@
 <body>
 
 <div class="header">
-  <div class="header-logo">&#128241;</div>
-  <h1>Lista de Precios</h1>
-  <p>Celulares Nuevos y Usados</p>
+  <div class="header-logo-wrap">
+    <img class="header-logo-img" src="https://i.imgur.com/2h29n0F.png" alt="Emprendiendo Tecnología">
+    <div class="header-brand">
+      <h1>Emprendiendo<br>Tecnología</h1>
+      <span>Celulares Nuevos</span>
+    </div>
+  </div>
   <div class="update-info">&#128336; Actualizado: <span id="lastUpdate"></span></div>
 </div>
 
@@ -116,7 +122,7 @@
 var CONFIG = {
   csvURL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRBXNE70YoOcMMQCAgZPIqMcop5zfZb4GzlQjuWVxDloAtJeG8cqkvF0xq8p4a1U4tWD8mvGC3Wsrt2/pub?gid=0&single=true&output=csv",
   imagesURL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRBXNE70YoOcMMQCAgZPIqMcop5zfZb4GzlQjuWVxDloAtJeG8cqkvF0xq8p4a1U4tWD8mvGC3Wsrt2/pub?gid=1402015683&single=true&output=csv",
-  whatsappNumber: "5491149694443",
+  whatsappNumber: "5491127461864",
   autoRefreshMinutes: 5,
   maxReintentos: 3,
   esperaReintento: 3000
@@ -134,7 +140,7 @@ function limpiar(val) {
 function tieneStock(val) { var v=limpiar(val); return (v==="SI"||v==="S"||v==="1"||v==="TRUE"); }
 function parsearLineas(csv) { return csv.replace(/\r\n/g,"\n").replace(/\r/g,"\n").trim().split("\n"); }
 function fetchConTimeout(url,ms) {
-  return Promise.race([fetch(url), new Promise(function(_,r){setTimeout(function(){r(new Error("timeout"));},ms);})]);
+  return Promise.race([fetch(url), new Promise(function(_,r){setTimeout(function(){r(new Error("t"));},ms);})]);
 }
 function esperar(ms) { return new Promise(function(r){setTimeout(r,ms);}); }
 
@@ -142,9 +148,9 @@ function loadProducts(intento) {
   if (intento===undefined) intento=0;
   var ts = new Date().getTime();
   if (intento===0) {
-    document.getElementById("productsContainer").innerHTML = "<div class='loading'><span class='loading-dot'></span><span class='loading-dot'></span><span class='loading-dot'></span></div>";
+    document.getElementById("productsContainer").innerHTML="<div class='loading'><span class='loading-dot'></span><span class='loading-dot'></span><span class='loading-dot'></span></div>";
   } else {
-    document.getElementById("productsContainer").innerHTML = "<div class='retrying'>&#128260; Reintentando... (" + intento + "/" + CONFIG.maxReintentos + ")</div>";
+    document.getElementById("productsContainer").innerHTML="<div class='retrying'>&#128260; Reintentando... ("+intento+"/"+CONFIG.maxReintentos+")</div>";
   }
   fetchConTimeout(CONFIG.imagesURL+"&t="+ts,4000)
     .then(function(r){return r.text();})
@@ -153,12 +159,12 @@ function loadProducts(intento) {
       for(var i=1;i<lines.length;i++){var c=lines[i].split(",");if(c[0]&&c[1])imageMap[limpiarTexto(c[0]).toLowerCase()]=limpiarTexto(c[1]);}
     })
     .catch(function(){imageMap={};})
-    .then(function(){ return fetchConTimeout(CONFIG.csvURL+"&t="+ts,8000); })
+    .then(function(){return fetchConTimeout(CONFIG.csvURL+"&t="+ts,8000);})
     .then(function(r){return r.text();})
     .then(function(csv){procesarProductos(csv);})
     .catch(function(){
-      if(intento<CONFIG.maxReintentos){ esperar(CONFIG.esperaReintento).then(function(){loadProducts(intento+1);}); }
-      else { showError("No se pudo cargar. Verificá tu conexión y presioná &#128260;"); }
+      if(intento<CONFIG.maxReintentos){esperar(CONFIG.esperaReintento).then(function(){loadProducts(intento+1);});}
+      else{showError("No se pudo cargar. Verificá tu conexión y presioná &#128260;");}
     });
 }
 
@@ -169,13 +175,13 @@ function procesarProductos(csv) {
     if(v.length<5||!v[1]||!v[4]) continue;
     if(!tieneStock(v[7])) continue;
     var name=limpiarTexto(v[1]);
-    allProducts.push({ brand:limpiarTexto(v[0])||"Sin categoria", name:name, specs:limpiarTexto(v[2])||"", currency:limpiarTexto(v[3])||"$", price:parseFloat((v[4]||"").replace(/[^0-9]/g,""))||0, color:limpiarTexto(v[5])||"", emoji:limpiarTexto(v[6])||"", image:imageMap[name.toLowerCase()]||"" });
+    allProducts.push({brand:limpiarTexto(v[0])||"Sin categoria",name:name,specs:limpiarTexto(v[2])||"",currency:limpiarTexto(v[3])||"$",price:parseFloat((v[4]||"").replace(/[^0-9]/g,""))||0,color:limpiarTexto(v[5])||"",emoji:limpiarTexto(v[6])||"",image:imageMap[name.toLowerCase()]||""});
   }
   if(allProducts.length===0){showError("No hay productos disponibles");return;}
   renderFilters(); renderProducts(); updateDate();
 }
 
-function formatPrice(p,c){ var f=new Intl.NumberFormat("es-AR").format(p); return (c==="u$"||c==="USD")?"USD "+f:"ARS "+f; }
+function formatPrice(p,c){var f=new Intl.NumberFormat("es-AR").format(p);return(c==="u$"||c==="USD")?"USD "+f:"ARS "+f;}
 
 function getUniqueBrands(){
   var seen={},brands=[];
@@ -187,8 +193,8 @@ function renderFilters(){
   var c=document.getElementById("brandFilters");
   c.innerHTML="<button class='filter-btn active' data-brand='all' onclick=\"setFilter('all')\">Todos</button>";
   getUniqueBrands().forEach(function(b){
-    var btn=document.createElement("button"); btn.className="filter-btn"; btn.textContent=b;
-    btn.setAttribute("data-brand",b); btn.onclick=(function(x){return function(){setFilter(x);};})(b); c.appendChild(btn);
+    var btn=document.createElement("button");btn.className="filter-btn";btn.textContent=b;
+    btn.setAttribute("data-brand",b);btn.onclick=(function(x){return function(){setFilter(x);};})(b);c.appendChild(btn);
   });
 }
 
@@ -200,7 +206,7 @@ function setFilter(b){
 
 function filtrar(){
   var st=document.getElementById("searchInput").value.toLowerCase();
-  var cards=document.querySelectorAll(".product-card"); var count=0;
+  var cards=document.querySelectorAll(".product-card");var count=0;
   cards.forEach(function(c){
     var matchB=(currentFilter==="all"||c.getAttribute("data-brand")===currentFilter);
     var matchS=(c.getAttribute("data-name").indexOf(st)>=0||c.getAttribute("data-specs").indexOf(st)>=0);
@@ -210,11 +216,11 @@ function filtrar(){
 }
 
 function renderProducts(){
-  var c=document.getElementById("productsContainer"); c.innerHTML="";
+  var c=document.getElementById("productsContainer");c.innerHTML="";
   var sorted=allProducts.slice().sort(function(a,b){return a.price-b.price;});
   sorted.forEach(function(p){
-    var card=document.createElement("div"); card.className="product-card";
-    card.setAttribute("data-brand",p.brand); card.setAttribute("data-name",p.name.toLowerCase()); card.setAttribute("data-specs",p.specs.toLowerCase());
+    var card=document.createElement("div");card.className="product-card";
+    card.setAttribute("data-brand",p.brand);card.setAttribute("data-name",p.name.toLowerCase());card.setAttribute("data-specs",p.specs.toLowerCase());
     var fallback=p.emoji||"&#128241;";
     var imgHtml=p.image
       ?"<img src='"+p.image+"' alt='"+p.name+"' onerror=\"this.style.display='none';this.nextSibling.style.display='flex'\"><div class='no-image' style='display:none'>"+fallback+"</div>"
@@ -223,16 +229,8 @@ function renderProducts(){
     var w="https://wa.me/"+CONFIG.whatsappNumber+"?text=Hola!%20Me%20interesa%20"+encodeURIComponent(p.name)+"%20"+encodeURIComponent(p.specs);
     card.innerHTML=
       "<div class='product-image-wrap'>"+imgHtml+"<span class='stock-badge'>&#10003; En stock</span></div>"+
-      "<div class='product-body'>"+
-        "<div class='product-brand'>"+p.brand+"</div>"+
-        "<div class='product-name'>"+p.name+"</div>"+
-        "<div class='product-specs'>"+p.specs+"</div>"+
-        colorHtml+
-      "</div>"+
-      "<div class='product-footer'>"+
-        "<div class='price'>"+formatPrice(p.price,p.currency)+"</div>"+
-        "<a href='"+w+"' class='whatsapp-btn' target='_blank'>&#128172; Consultar</a>"+
-      "</div>";
+      "<div class='product-body'><div class='product-brand'>"+p.brand+"</div><div class='product-name'>"+p.name+"</div><div class='product-specs'>"+p.specs+"</div>"+colorHtml+"</div>"+
+      "<div class='product-footer'><div class='price'>"+formatPrice(p.price,p.currency)+"</div><a href='"+w+"' class='whatsapp-btn' target='_blank'>&#128172; Consultar</a></div>";
     c.appendChild(card);
   });
   document.getElementById("statsContainer").textContent="Mostrando "+sorted.length+" productos";
@@ -242,11 +240,10 @@ function updateDate(){
   var now=new Date();
   document.getElementById("lastUpdate").textContent=now.toLocaleDateString("es-AR",{day:"numeric",month:"long",hour:"2-digit",minute:"2-digit"});
 }
-
 function showError(m){document.getElementById("productsContainer").innerHTML="<div class='error-message'>"+m+"</div>";}
 
-document.getElementById("floatingWhatsapp").href="https://wa.me/"+CONFIG.whatsappNumber+"?text=Hola!%20Vi%20tu%20lista...";
-if(CONFIG.autoRefreshMinutes>0) setInterval(function(){loadProducts(0);},CONFIG.autoRefreshMinutes*60*1000);
+document.getElementById("floatingWhatsapp").href="https://wa.me/"+CONFIG.whatsappNumber+"?text=Hola!%20Vi%20la%20lista%20de%20Emprendiendo%20Tecnolog%C3%ADa...";
+if(CONFIG.autoRefreshMinutes>0)setInterval(function(){loadProducts(0);},CONFIG.autoRefreshMinutes*60*1000);
 loadProducts(0);
 </script>
 </body>
