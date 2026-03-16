@@ -8,7 +8,6 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #f5f5f7; min-height: 100vh; }
-
         .header { background: white; padding: 30px 20px 24px; text-align: center; border-bottom: 1px solid #e8e8ed; }
         .header-logo-wrap { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 6px; }
         .header-logo-img { width: 64px; height: 64px; object-fit: contain; }
@@ -17,7 +16,6 @@
         .header-brand span { font-size: 0.85em; color: #6e6e73; font-weight: 400; }
         .update-info { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; background: #f5f5f7; padding: 6px 14px; border-radius: 20px; font-size: 0.8em; color: #6e6e73; }
 
-        /* ── DESTACADOS CARRUSEL ── */
         .destacados-section { max-width: 1200px; margin: 0 auto; padding: 24px 20px 0; }
         .destacados-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
         .destacados-title { font-size: 1em; font-weight: 700; color: #1d1d1f; display: flex; align-items: center; gap: 8px; }
@@ -25,12 +23,12 @@
         .dest-dot { width: 7px; height: 7px; border-radius: 50%; background: #c8c8cc; border: none; cursor: pointer; padding: 0; transition: all 0.3s; }
         .dest-dot.active { background: #0071e3; width: 20px; border-radius: 4px; }
 
-        .dest-carousel-wrap { position: relative; overflow: hidden; border-radius: 16px; }
-        .dest-carousel-track { display: flex; gap: 14px; transition: transform 0.5s cubic-bezier(.32,.72,0,1); will-change: transform; padding-bottom: 4px; }
-        .dest-card { min-width: 200px; max-width: 200px; background: white; border-radius: 16px; overflow: hidden; border: 1px solid #e8e8ed; flex-shrink: 0; display: flex; flex-direction: column; position: relative; transition: all 0.2s; }
+        .dest-carousel-wrap { position: relative; overflow: hidden; touch-action: pan-y; }
+        .dest-carousel-track { display: flex; gap: 14px; transition: transform 0.45s cubic-bezier(.32,.72,0,1); will-change: transform; padding-bottom: 4px; }
+        .dest-card { min-width: 200px; max-width: 200px; background: white; border-radius: 16px; overflow: hidden; border: 1px solid #e8e8ed; flex-shrink: 0; display: flex; flex-direction: column; position: relative; transition: box-shadow 0.2s, transform 0.2s; user-select: none; }
         .dest-card:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
         .dest-img-wrap { width: 100%; height: 130px; background: #f5f5f7; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
-        .dest-img-wrap img { width: 100%; height: 100%; object-fit: contain; padding: 14px; }
+        .dest-img-wrap img { width: 100%; height: 100%; object-fit: contain; padding: 14px; pointer-events: none; }
         .dest-no-img { font-size: 48px; }
         .dest-etiqueta { position: absolute; top: 8px; right: 8px; color: white; font-size: 0.68em; font-weight: 700; padding: 3px 9px; border-radius: 20px; white-space: nowrap; }
         .dest-etiqueta.rojo { background: #ff3b30; }
@@ -72,7 +70,7 @@
         .price { font-size: 1.2em; font-weight: 700; color: #1d1d1f; letter-spacing: -0.3px; }
         .footer-btns { display: flex; gap: 6px; }
         .whatsapp-btn { background: #25d366; color: white; padding: 9px 14px; border-radius: 10px; text-decoration: none; display: flex; align-items: center; gap: 5px; font-weight: 600; font-size: 0.8em; font-family: 'Inter', sans-serif; transition: all 0.2s; white-space: nowrap; cursor: pointer; border: none; }
-        .whatsapp-btn:hover { background: #1db954; transform: scale(1.03); }
+        .whatsapp-btn:hover { background: #1db954; }
         .agregar-btn { background: #f0f7ff; color: #0071e3; border: 1.5px solid #0071e3; padding: 9px 12px; border-radius: 10px; display: flex; align-items: center; gap: 4px; font-weight: 600; font-size: 0.8em; font-family: 'Inter', sans-serif; transition: all 0.2s; white-space: nowrap; cursor: pointer; }
         .agregar-btn:hover { background: #0071e3; color: white; }
         .agregar-btn.agregado { background: #0071e3; color: white; border-color: #0071e3; }
@@ -87,14 +85,14 @@
         .cart-overlay.active .cart-panel { transform: translateY(0); }
         .cart-panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
         .cart-panel-title { font-size: 1.1em; font-weight: 700; color: #1d1d1f; }
-        .cart-clear-btn { background: none; border: none; color: #ff3b30; font-size: 0.82em; font-family: 'Inter', sans-serif; cursor: pointer; font-weight: 500; padding: 4px 8px; border-radius: 6px; }
+        .cart-clear-btn { background: none; border: none; color: #ff3b30; font-size: 0.82em; font-family: 'Inter', sans-serif; cursor: pointer; font-weight: 500; padding: 4px 8px; }
         .cart-items { overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
         .cart-item { display: flex; align-items: center; gap: 10px; background: #f5f5f7; border-radius: 12px; padding: 12px 14px; }
         .cart-item-info { flex: 1; }
         .cart-item-name { font-size: 0.9em; font-weight: 600; color: #1d1d1f; }
         .cart-item-specs { font-size: 0.78em; color: #6e6e73; margin-top: 2px; }
         .cart-item-price { font-size: 0.88em; font-weight: 700; color: #1d1d1f; white-space: nowrap; }
-        .cart-item-remove { background: none; border: none; color: #c53030; font-size: 17px; cursor: pointer; padding: 4px 6px; border-radius: 6px; }
+        .cart-item-remove { background: none; border: none; color: #c53030; font-size: 17px; cursor: pointer; padding: 4px 6px; }
         .cart-empty { text-align: center; color: #6e6e73; font-size: 0.9em; padding: 30px 0; }
         .cart-footer { border-top: 1px solid #e8e8ed; padding-top: 16px; display: flex; flex-direction: column; gap: 10px; }
         .cart-wa-btn { display: flex; align-items: center; justify-content: center; gap: 10px; background: #25d366; color: white; border: none; border-radius: 13px; padding: 15px; font-family: 'Inter', sans-serif; font-size: 0.95em; font-weight: 700; cursor: pointer; }
@@ -123,7 +121,6 @@
         .loading-dot:nth-child(2) { animation-delay: 0.2s; }
         .loading-dot:nth-child(3) { animation-delay: 0.4s; }
         @keyframes bounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-10px)} }
-        .retrying { text-align: center; padding: 40px; color: #ff9f0a; font-size: 0.95em; grid-column: 1/-1; }
         .error-message { background: #fff2f2; color: #c53030; padding: 24px; border-radius: 14px; text-align: center; grid-column: 1/-1; }
         .hidden { display: none !important; }
         .floating-whatsapp { position: fixed; bottom: 24px; right: 24px; background: #25d366; color: white; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 26px; z-index: 1000; box-shadow: 0 4px 20px rgba(37,211,102,0.4); transition: transform 0.2s; }
@@ -239,12 +236,12 @@ var CONFIG = {
 
 var allProducts=[], imageMap={}, currentFilter="all", carrito=[];
 var carruselIdx=0, carruselTotal=0, carruselTimer=null, carruselPausado=false;
-var CARD_W = 214; // 200px + 14px gap
 
-function parseCSV(text) {
-  var rows=[], lines=text.replace(/\r\n/g,"\n").replace(/\r/g,"\n").split("\n");
+/* ── CSV PARSER ── */
+function parseCSV(text){
+  var rows=[],lines=text.replace(/\r\n/g,"\n").replace(/\r/g,"\n").split("\n");
   for(var i=0;i<lines.length;i++){
-    var line=lines[i]; if(!line.trim()) continue;
+    var line=lines[i];if(!line.trim())continue;
     var cols=[],cur="",inQ=false;
     for(var j=0;j<line.length;j++){
       var ch=line[j];
@@ -252,37 +249,52 @@ function parseCSV(text) {
       else if(ch===','&&!inQ){cols.push(cur.trim());cur="";}
       else{cur+=ch;}
     }
-    cols.push(cur.trim()); rows.push(cols);
+    cols.push(cur.trim());rows.push(cols);
   }
   return rows;
 }
-function limpiar(val){if(!val)return"";return val.replace(/[\r\n"]/g,"").trim().toUpperCase();}
-function tieneStock(val){var v=limpiar(val);return v==="SI"||v==="S"||v==="1"||v==="TRUE";}
-function esDestacado(val){var v=limpiar(val);return v==="SI"||v==="S"||v==="1"||v==="TRUE";}
+function limpiar(v){if(!v)return"";return v.replace(/[\r\n"]/g,"").trim().toUpperCase();}
+function tieneStock(v){var s=limpiar(v);return s==="SI"||s==="S"||s==="1"||s==="TRUE";}
+function esDestacado(v){var s=limpiar(v);return s==="SI"||s==="S"||s==="1"||s==="TRUE";}
 function fetchConTimeout(url,ms){return Promise.race([fetch(url),new Promise(function(_,r){setTimeout(function(){r(new Error("t"));},ms);})]);}
 function esperar(ms){return new Promise(function(r){setTimeout(r,ms);});}
 function formatPrice(p,c){var f=new Intl.NumberFormat("es-AR").format(p);return(c==="u$"||c==="USD")?"USD "+f:"ARS "+f;}
 
 /* ── CARRUSEL ── */
-function carruselGoTo(idx) {
+function getCardW(){
+  /* ancho real de la primera tarjeta + gap */
   var track=document.getElementById("destacadosScroll");
+  if(track&&track.children.length>0){
+    var style=getComputedStyle(track);
+    var gap=parseFloat(style.gap)||14;
+    return track.children[0].offsetWidth+gap;
+  }
+  return 214;
+}
+
+function getMaxIdx(){
   var wrap=document.getElementById("destCarouselWrap");
-  var visible=Math.floor(wrap.offsetWidth/CARD_W)||1;
-  var max=Math.max(0, carruselTotal-visible);
+  var cardW=getCardW();
+  var visible=Math.max(1,Math.floor(wrap.offsetWidth/cardW));
+  return Math.max(0, carruselTotal - visible);
+}
+
+function carruselGoTo(idx){
+  var max=getMaxIdx();
+  /* loop: si pasa del max vuelve a 0, si baja de 0 va al max */
   if(idx>max) idx=0;
   if(idx<0) idx=max;
   carruselIdx=idx;
-  track.style.transform="translateX(-"+(idx*CARD_W)+"px)";
+  var cardW=getCardW();
+  document.getElementById("destacadosScroll").style.transform="translateX(-"+(idx*cardW)+"px)";
   renderDots();
 }
 
-function renderDots() {
-  var wrap=document.getElementById("destCarouselWrap");
-  var visible=Math.max(1,Math.floor(wrap.offsetWidth/CARD_W));
-  var steps=Math.max(1,carruselTotal-visible+1);
+function renderDots(){
+  var max=getMaxIdx();
   var dotsEl=document.getElementById("destDots");
   dotsEl.innerHTML="";
-  for(var i=0;i<steps;i++){
+  for(var i=0;i<=max;i++){
     var d=document.createElement("button");
     d.className="dest-dot"+(i===carruselIdx?" active":"");
     d.onclick=(function(x){return function(){carruselGoTo(x);reiniciarTimer();};})(i);
@@ -290,24 +302,43 @@ function renderDots() {
   }
 }
 
-function iniciarCarrusel() {
-  if(carruselTotal<=1) return;
-  clearInterval(carruselTimer);
-  carruselTimer=setInterval(function(){
-    if(!carruselPausado) carruselGoTo(carruselIdx+1);
-  }, CONFIG.carruselIntervalo);
-  var wrap=document.getElementById("destCarouselWrap");
-  wrap.addEventListener("mouseenter",function(){carruselPausado=true;});
-  wrap.addEventListener("mouseleave",function(){carruselPausado=false;});
-  wrap.addEventListener("touchstart",function(){carruselPausado=true;},{passive:true});
-  wrap.addEventListener("touchend",function(){setTimeout(function(){carruselPausado=false;},2000);},{passive:true});
-}
-
 function reiniciarTimer(){
   clearInterval(carruselTimer);
   carruselTimer=setInterval(function(){
     if(!carruselPausado) carruselGoTo(carruselIdx+1);
-  }, CONFIG.carruselIntervalo);
+  },CONFIG.carruselIntervalo);
+}
+
+function iniciarCarrusel(){
+  if(carruselTotal<=1) return;
+  reiniciarTimer();
+  var wrap=document.getElementById("destCarouselWrap");
+
+  /* ── SWIPE TÁCTIL ── */
+  var touchStartX=0, touchStartY=0, dragging=false;
+  wrap.addEventListener("touchstart",function(e){
+    touchStartX=e.touches[0].clientX;
+    touchStartY=e.touches[0].clientY;
+    dragging=true;
+    carruselPausado=true;
+  },{passive:true});
+  wrap.addEventListener("touchend",function(e){
+    if(!dragging)return;
+    dragging=false;
+    var dx=e.changedTouches[0].clientX - touchStartX;
+    var dy=e.changedTouches[0].clientY - touchStartY;
+    /* solo si el gesto es más horizontal que vertical */
+    if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>30){
+      if(dx<0) carruselGoTo(carruselIdx+1);
+      else carruselGoTo(carruselIdx-1);
+      reiniciarTimer();
+    }
+    setTimeout(function(){carruselPausado=false;},1500);
+  },{passive:true});
+
+  /* ── HOVER MOUSE ── */
+  wrap.addEventListener("mouseenter",function(){carruselPausado=true;});
+  wrap.addEventListener("mouseleave",function(){carruselPausado=false;});
 }
 
 /* ── CARRITO ── */
@@ -385,7 +416,7 @@ function loadProducts(intento){
   if(intento===undefined)intento=0;
   var ts=new Date().getTime();
   if(intento===0)document.getElementById("productsContainer").innerHTML="<div class='loading'><span class='loading-dot'></span><span class='loading-dot'></span><span class='loading-dot'></span></div>";
-  else document.getElementById("productsContainer").innerHTML="<div class='retrying'>&#128260; Reintentando... ("+intento+"/"+CONFIG.maxReintentos+")</div>";
+  else document.getElementById("productsContainer").innerHTML="<div style='text-align:center;padding:40px;color:#ff9f0a'>&#128260; Reintentando... ("+intento+"/"+CONFIG.maxReintentos+")</div>";
   fetchConTimeout(CONFIG.imagesURL+"&t="+ts,4000)
     .then(function(r){return r.text();})
     .then(function(csv){var rows=parseCSV(csv);imageMap={};for(var i=1;i<rows.length;i++){if(rows[i][0]&&rows[i][1])imageMap[rows[i][0].toLowerCase()]=rows[i][1];}})
@@ -410,15 +441,15 @@ function procesarProductos(csv){
   renderFilters();renderDestacados();renderProducts();updateDate();
 }
 
-function etiquetaClass(t){var tl=t.toLowerCase();if(tl.indexOf("oferta")>=0||tl.indexOf("promo")>=0)return"dest-etiqueta rojo";if(tl.indexOf("nuevo")>=0)return"dest-etiqueta azul";if(tl.indexOf("vendido")>=0||tl.indexOf("popular")>=0)return"dest-etiqueta verde";return"dest-etiqueta rojo";}
+function etiquetaClass(t){var tl=t.toLowerCase();if(tl.indexOf("oferta")>=0)return"dest-etiqueta rojo";if(tl.indexOf("nuevo")>=0)return"dest-etiqueta azul";if(tl.indexOf("vendido")>=0)return"dest-etiqueta verde";return"dest-etiqueta rojo";}
 
 function renderDestacados(){
   var dest=allProducts.filter(function(p){return p.destacado;});
   var section=document.getElementById("destacadosSection");
   var track=document.getElementById("destacadosScroll");
   if(dest.length===0){section.style.display="none";return;}
-  section.style.display="block"; track.innerHTML="";
-  carruselIdx=0; carruselTotal=dest.length;
+  section.style.display="block";track.innerHTML="";
+  carruselIdx=0;carruselTotal=dest.length;
   dest.forEach(function(p){
     var card=document.createElement("div");card.className="dest-card";
     var fallback=p.emoji||"&#128241;";
@@ -429,8 +460,8 @@ function renderDestacados(){
     card.innerHTML="<div class='dest-img-wrap'>"+imgHtml+etiqHtml+"</div><div class='dest-body'><div class='dest-brand'>"+p.brand+"</div><div class='dest-name'>"+p.name+"</div></div><div class='dest-footer'><div class='dest-price'>"+formatPrice(p.price,p.currency)+"</div><button class='dest-wa-btn' onclick=\"abrirModal('"+nE+"','"+sE+"')\">&#128172; Consultar</button></div>";
     track.appendChild(card);
   });
-  renderDots();
-  iniciarCarrusel();
+  /* esperar render para calcular anchos reales */
+  setTimeout(function(){renderDots();iniciarCarrusel();},50);
 }
 
 function getUniqueBrands(){var seen={},brands=[];allProducts.forEach(function(p){if(!seen[p.brand]){seen[p.brand]=true;brands.push(p.brand);}});return brands.sort();}
